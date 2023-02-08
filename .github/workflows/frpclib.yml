@@ -1,0 +1,85 @@
+name: frpclib
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      root_sol:
+        description: "Title"
+        required: true
+        default: "Build FrpcLib"
+
+env:
+  GO_VERSION: '1.20'
+  GOMOBILE_COMMIT: 'latest'
+  NDK_LTS_VERSION: '25.1.8937393'
+  SDK_TOOLS_VERSION: '9477386'
+  ANDROID_PLATFORM_VERSION: '33'
+  ANDROID_BUILD_TOOLS_VERSION: '33.0.1'
+  MIN_ANDROID_API: '19'
+
+jobs:
+  frpclib:
+    name: Build FrpcLib
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # 删除旧的工作流
+#      - name: Delete Weekly Build
+#        uses: Mattraks/delete-workflow-runs@v2
+#        with:
+#          token: ${{ github.token }}
+#          repository: ${{ github.repository }}
+#          retain_days: 0 # 全部删除只留正在跑的一条
+#          keep_minimum_runs: 0 # 全部删除只留正在跑的一条
+#          delete_workflow_pattern: 'frpclib'
+
+      - run: sudo apt-get update -q -y
+      - run: sudo apt-get install -q -y --no-install-recommends curl wget unzip g++ libc6-dev
+
+      - name: set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Download & install the Android SDK.
+        uses: malinskiy/action-android/install-sdk@release/0.1.4
+      - run: sdkmanager --update
+      - run: sdkmanager 'platforms;android-${{ env.ANDROID_PLATFORM_VERSION }}'
+      - run: sdkmanager 'build-tools;${{ env.ANDROID_BUILD_TOOLS_VERSION }}'
+      - run: sdkmanager 'ndk;${{ env.NDK_LTS_VERSION }}'
+      - run: sdkmanager 'extras;android;m2repository'
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - run: go install golang.org/x/mobile/cmd/gomobile@${{ env.GOMOBILE_COMMIT }}
+      - run: go install golang.org/x/mobile/cmd/gobind@${{ env.GOMOBILE_COMMIT }}
+      - run: gomobile init -v
+
+      - run: go mod tidy && go get -u golang.org/x/mobile/bind
+      - run: cd ./cmd/frpclib && gomobile bind -v --target=android -androidapi ${{ env.MIN_ANDROID_API }} -o frpclib.aar .
+
+      - name: Save logcat output
+        uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: logcat
+          path: artifacts/logcat.log
+
+      # 存档打包的文件
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: FrpcLib
+          path: cmd/frpclib/frpclib*
+          if-no-files-found: error
