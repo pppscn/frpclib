@@ -717,6 +717,8 @@ bandwidth_limit = 1MB
 
 Set `bandwidth_limit` in each proxy's configure to enable this feature. Supported units are `MB` and `KB`.
 
+Set `bandwidth_limit_mode` to `client` or `server` to limit bandwidth on the client or server side. Default is `client`.
+
 ### TCP Stream Multiplexing
 
 frp supports tcp stream multiplexing since v0.10.0 like HTTP2 Multiplexing, in which case all logic connections to the same frpc are multiplexed into the same TCP connection.
