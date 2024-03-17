@@ -1,11 +1,22 @@
-### Deprecation Notices
-
-* Using an underscore in a flag name is deprecated and has been replaced by a hyphen. The underscore format will remain compatible for some time, until it is completely removed in a future version. For example, `--remote_port` is replaced with `--remote-port`.
-
 ### Features
 
-* The `Refresh` and `ClearOfflineProxies` buttons have been added to the Dashboard of frps.
+* Support range ports mapping in TOML/YAML/JSON configuration file by using go template syntax.
+
+  For example:
+
+  ```
+  {{- range $_, $v := parseNumberRangePair "6000-6006,6007" "6000-6006,6007" }}
+  [[proxies]]
+  name = "tcp-{{ $v.First }}"
+  type = "tcp"
+  localPort = {{ $v.First }}
+  remotePort = {{ $v.Second }}
+  {{- end }}
+  ```
+
+  This will create 8 proxies such as `tcp-6000, tcp-6001, ... tcp-6007`.
 
 ### Fixes
 
-* The host/domain matching in the routing rules has been changed to be case-insensitive.
+* Fix the issue of incorrect interval time for rotating the log by day.
+* Disable quic-go's ECN support by default. It may cause issues on certain operating systems.
