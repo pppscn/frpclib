@@ -32,14 +32,14 @@ jobs:
           fetch-depth: 0
 
       # 删除旧的工作流
-#      - name: Delete Weekly Build
-#        uses: Mattraks/delete-workflow-runs@v2
-#        with:
-#          token: ${{ github.token }}
-#          repository: ${{ github.repository }}
-#          retain_days: 0 # 全部删除只留正在跑的一条
-#          keep_minimum_runs: 0 # 全部删除只留正在跑的一条
-#          delete_workflow_pattern: 'frpclib'
+      - name: Delete Old Build
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 0 # 全部删除只留正在跑的一条
+          keep_minimum_runs: 0 # 全部删除只留正在跑的一条
+          delete_workflow_pattern: 'frpclib'
 
       - run: sudo apt-get update -q -y
       - run: sudo apt-get install -q -y --no-install-recommends curl wget unzip g++ libc6-dev
