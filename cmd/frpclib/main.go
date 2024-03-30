@@ -20,9 +20,11 @@ import (
 	_ "github.com/fatedier/frp/assets/frpc"
 	"github.com/fatedier/frp/cmd/frpclib/sub"
 	"github.com/fatedier/frp/pkg/util/version"
+	"github.com/fatedier/frp/pkg/util/system"
 )
 
 func main() {
+	system.EnableCompatibilityMode()
 	sub.Execute()
 }
 
