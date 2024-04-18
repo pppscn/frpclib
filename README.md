@@ -82,6 +82,7 @@ frp also offers a P2P connect mode.
     * [Client Plugins](#client-plugins)
     * [Server Manage Plugins](#server-manage-plugins)
     * [SSH Tunnel Gateway](#ssh-tunnel-gateway)
+* [Releated Projects](#releated-projects)
 * [Contributing](#contributing)
 * [Donation](#donation)
     * [GitHub Sponsors](#github-sponsors)
@@ -1003,7 +1004,7 @@ In this example, it will set header `x-from-where: frp` in the HTTP request.
 
 #### HTTP X-Forwarded-For
 
-This feature is for http proxy only.
+This feature is for `http` proxies or proxies with the `https2http` and `https2https` plugins enabled.
 
 You can get user's real IP from HTTP request headers `X-Forwarded-For`.
 
@@ -1243,6 +1244,11 @@ frpc tcp --proxy_name "test-tcp" --local_ip 127.0.0.1 --local_port 8080 --remote
 ```
 
 Please refer to this [document](/doc/ssh_tunnel_gateway.md) for more information.
+
+## Releated Projects
+
+* [gofrp/plugin](https://github.com/gofrp/plugin) - A repository for frp plugins that contains a variety of plugins implemented based on the frp extension mechanism, meeting the customization needs of different scenarios.
+* [gofrp/tiny-frpc](https://github.com/gofrp/tiny-frpc) - A lightweight version of the frp client (around 3.5MB at minimum) implemented using the ssh protocol, supporting some of the most commonly used features, suitable for devices with limited resources.
 
 ## Contributing
 

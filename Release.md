@@ -1,7 +1,7 @@
 ### Features
 
-* `https2http` and `https2https` plugin now supports `X-Forwared-For` header.
+* Show tcpmux proxies on the frps dashboard.
 
 ### Fixes
 
-* `X-Forwared-For` header is now correctly set in the request to the backend server for proxy type http.
+* When an HTTP proxy request times out, it returns 504 instead of 404 now.
